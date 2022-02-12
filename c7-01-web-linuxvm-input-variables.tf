@@ -1,0 +1,2 @@
+#Linux VM variables
+
