@@ -1,10 +1,10 @@
 # Public IP Outputs
 
-## Public IP Address
-output "web_linuxvm_public_ip" {
+## Public IP Address - Removed after introduction of the Bastion Subnet/Service introduction...
+/*output "web_linuxvm_public_ip" {
   description = "Web Linux VM Public Address"
   value       = azurerm_public_ip.web_linuxvm_public_ip.ip_address
-}
+}*/
 
 # Network Interface Outputs
 ## Network Interface ID
@@ -20,11 +20,11 @@ output "web_linuxvm_network_interface_private_ip_addresses" {
 
 # Linux VM Outputs
 
-## Virtual Machine Public IP
-output "web_linuxvm_public_ip_address" {
+## Virtual Machine Public IP - Removed after introduction of the Bastion Subnet/Service introduction...
+/*output "web_linuxvm_public_ip_address" {
   description = "Web Linux Virtual Machine Public IP"
   value       = azurerm_linux_virtual_machine.web_linuxvm.public_ip_address
-}
+}*/
 
 ## Virtual Machine Private IP
 output "web_linuxvm_private_ip_address" {

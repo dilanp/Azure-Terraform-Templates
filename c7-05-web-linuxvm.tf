@@ -21,7 +21,7 @@ CUSTOM_DATA
 
 # Linux VM.
 resource "azurerm_linux_virtual_machine" "web_linuxvm" {
-  name = "${local.resourec_name_prefix}-web-linuxvm"
+  name = "${local.resource_name_prefix}-web-linuxvm"
   #computer_name = "web-linux-vm"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
