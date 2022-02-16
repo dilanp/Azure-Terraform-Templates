@@ -40,3 +40,44 @@ resource "null_resource" "null_copy_ssk_key_to_bastion" {
     #script = file(...)
   }
 }
+
+#========================================================================
+
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "2.40.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+
+resource "azurerm_container_registry" "acr-dev" {
+  name                = "acrdevregistrycloudacademylab001"
+  resource_group_name = "cal-1471-12"
+  location            = "West US"
+  sku                 = "Standard"
+  admin_enabled       = false
+
+  provisioner "local-exec" {
+    when    = destroy # Redundant step just to demonstrate.
+    command = <<EOT
+       az acr repository delete --name ${self.name} --image hello-world:calab --yes
+    EOT
+  }
+}
+
+#Import Container Image to Azure Container Registries
+resource "null_resource" "image" {
+
+  provisioner "local-exec" {
+    command = <<-EOT
+       az acr import --name ${azurerm_container_registry.acr-dev.name} --source docker.io/library/hello-world:latest --image hello-world:calab
+    EOT
+  }
+}
