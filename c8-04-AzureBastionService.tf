@@ -1,4 +1,6 @@
+# Commented after the introduction of the web load balancer.
 
+/*
 # Azure Bastion Service - Resources
 ## Resource-1: Azure Bastion Subnet
 resource "azurerm_subnet" "bastion_service_subnet" {
@@ -29,3 +31,4 @@ resource "azurerm_bastion_host" "bastion_host" {
     public_ip_address_id = azurerm_public_ip.bastion_service_publicip.id
   }
 }
+*/
