@@ -1,15 +1,20 @@
 
-# NSG for the linux VM NIC.
+# OPTIONAL!!!
+
+# NSG for the linux web VM NICs.
 resource "azurerm_network_security_group" "web_vmnic_nsg" {
-  name                = "${azurerm_network_interface.web_linuxvm_nic.name}-nsg"
+  name                = "${local.resource_name_prefix}-web-linuxvm-nic-nsg"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# NSG - NIC association.
-resource "azurerm_network_interface_security_group_association" "example" {
-  depends_on                = [azurerm_network_security_rule.web_vmnic_nsg_rule_inbound]
-  network_interface_id      = azurerm_network_interface.web_linuxvm_nic.id
+# NSG - NICs association.
+resource "azurerm_network_interface_security_group_association" "web_vmnic_nsg_associate" {
+  depends_on = [azurerm_network_security_rule.web_vmnic_nsg_rule_inbound]
+
+  count = var.web_linuxvm_instance_count
+
+  network_interface_id      = azurerm_network_interface.web_linuxvm_nic[count.index].id
   network_security_group_id = azurerm_network_security_group.web_vmnic_nsg.id
 }
 

@@ -21,15 +21,17 @@ CUSTOM_DATA
 
 # Linux VM.
 resource "azurerm_linux_virtual_machine" "web_linuxvm" {
-  name = "${local.resource_name_prefix}-web-linuxvm"
-  #computer_name = "web-linux-vm"
+  count = var.web_linuxvm_instance_count
+
+  name                = "${local.resource_name_prefix}-web-linuxvm-${count.index}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_DS1_v2"
   admin_username      = "azureuser"
+  #computer_name      = "web-linux-vm"
 
   network_interface_ids = [
-    azurerm_network_interface.web_linuxvm_nic.id
+    element(azurerm_network_interface.web_linuxvm_nic[*].id, count.index)
   ]
 
   admin_ssh_key {
