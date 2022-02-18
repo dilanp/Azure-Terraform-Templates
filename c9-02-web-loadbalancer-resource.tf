@@ -53,9 +53,20 @@ resource "azurerm_lb_rule" "web_lb_rule_app1" {
 
 # Associate backend VM NIC with the load balancer backend pool.
 resource "azurerm_network_interface_backend_address_pool_association" "web_nic_lb_associate" {
+  for_each = var.web_linuxvm_instance_count
+
+  network_interface_id    = azurerm_network_interface.web_linuxvm_nic[each.key].id
+  ip_configuration_name   = azurerm_network_interface.web_linuxvm_nic[each.key].ip_configuration[0].name
+  backend_address_pool_id = azurerm_lb_backend_address_pool.web_lb_backend_address_pool.id
+}
+
+# Implementation using count meta arguments.
+/*
+resource "azurerm_network_interface_backend_address_pool_association" "web_nic_lb_associate" {
   count = var.web_linuxvm_instance_count
 
   network_interface_id    = azurerm_network_interface.web_linuxvm_nic[count.index].id
   ip_configuration_name   = azurerm_network_interface.web_linuxvm_nic[count.index].ip_configuration[0].name
   backend_address_pool_id = azurerm_lb_backend_address_pool.web_lb_backend_address_pool.id
 }
+*/

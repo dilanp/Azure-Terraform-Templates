@@ -12,11 +12,23 @@ resource "azurerm_network_security_group" "web_vmnic_nsg" {
 resource "azurerm_network_interface_security_group_association" "web_vmnic_nsg_associate" {
   depends_on = [azurerm_network_security_rule.web_vmnic_nsg_rule_inbound]
 
+  for_each = var.web_linuxvm_instance_count
+
+  network_interface_id      = azurerm_network_interface.web_linuxvm_nic[each.key].id
+  network_security_group_id = azurerm_network_security_group.web_vmnic_nsg.id
+}
+
+# Implementation using count meta arguments.
+/*
+resource "azurerm_network_interface_security_group_association" "web_vmnic_nsg_associate" {
+  depends_on = [azurerm_network_security_rule.web_vmnic_nsg_rule_inbound]
+
   count = var.web_linuxvm_instance_count
 
   network_interface_id      = azurerm_network_interface.web_linuxvm_nic[count.index].id
   network_security_group_id = azurerm_network_security_group.web_vmnic_nsg.id
 }
+*/
 
 # Locals block for NSG rule.
 locals {
