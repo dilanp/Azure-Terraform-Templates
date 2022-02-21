@@ -11,6 +11,13 @@ output "db_subnet_id" {
   value       = azurerm_subnet.dbsubnet.id
 }
 
+# Output secret information
+output "primary_key" {
+  description = "The primary access key for the storage account"
+  value       = azurerm_storage_account.sa.primary_access_key
+  sensitive   = true
+}
+
 # Using splat expressions.
 output "web_linuxvm_virtual_machine_id" {
   description = "Web Linux Virtual Machine ID "

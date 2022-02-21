@@ -11,8 +11,8 @@ variable "location" {
 # Numeric variable.
 variable "web_linuxvm_instance_count" {
   description = "Web Linux VM Instance Count"
-  type = number 
-  default = 1
+  type        = number
+  default     = 1
 }
 
 # List type variable.
@@ -46,6 +46,15 @@ variable "os" {
 }
 
 ##============= Usage of variables for resource creation =============
+
+resource "azurerm_storage_account" "sa" {
+  name                = var.saname
+  resource_group_name = var.rgname
+  # Conditional value assignment in case of empty variable value for location.
+  location                 = var.location != "" ? var.location : "southcentralus"
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+}
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-dev-${var.location}-001"
