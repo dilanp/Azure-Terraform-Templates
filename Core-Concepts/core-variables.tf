@@ -45,6 +45,22 @@ variable "os" {
   })
 }
 
+# List of Objects variable.
+variable "nsg_rule" {
+  description = "OS image to deploy"
+  type = list(object({
+    name                       = string
+    priority                   = number
+    direction                  = string
+    access                     = string
+    protocol                   = string
+    source_port_range          = string
+    destination_port_range     = string
+    source_address_prefix      = string
+    destination_address_prefix = string
+  }))
+}
+
 ##============= Usage of variables for resource creation =============
 
 resource "azurerm_storage_account" "sa" {
@@ -86,6 +102,28 @@ resource "azurerm_virtual_machine" "vm" {
   }
 }
 
+# Refer list of objects variable in dynamic block.
+resource "azurerm_network_security_group" "nsg" {
+  name                = var.nsgname
+  location            = var.location
+  resource_group_name = var.rgname
+
+  dynamic "security_rule" {
+    for_each = var.nsg_rule
+    content {
+      name                       = security_rule.value.name
+      priority                   = security_rule.value.priority
+      direction                  = security_rule.value.direction
+      access                     = security_rule.value.access
+      protocol                   = security_rule.value.protocol
+      source_port_range          = security_rule.value.source_port_range
+      destination_port_range     = security_rule.value.destination_port_range
+      source_address_prefix      = security_rule.value.source_address_prefix
+      destination_address_prefix = security_rule.value.destination_address_prefix
+    }
+  }
+}
+
 ## ========= Assign variable values in terraform.tfvars file ==========
 
 # Simple type.
@@ -103,3 +141,29 @@ os = {
   sku       = "16.04.0-LTS"
   version   = "latest"
 }
+
+# List of objects.
+nsg_rule = [
+  {
+    name                       = "http"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  },
+  {
+    name                       = "ssh"
+    priority                   = 101
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "22"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+]
